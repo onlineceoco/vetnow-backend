@@ -1,15 +1,13 @@
 const express = require("express");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controller/error.controller");
-const path = require("path");
 const cors = require("cors");
 const app = express();
 
 app.use(express.json());
 app.use(express.static("public"));
 
-app.use(cors({credentials:true,origin:true}));
-
+app.use(cors({ credentials: true, origin: true }));
 
 app.use("/api/v1/users", require("./routes/users"));
 app.use("/api/v1/products", require("./routes/product"));
