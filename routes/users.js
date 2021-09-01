@@ -5,9 +5,11 @@ const {
   signupLoginHandler,
   loginConfirmHandler,
   isUserLoggedIn,
-  getAllUsersHandler,
 } = require("../controller/signup-login.controller");
-const { getAllDoctorsHandler } = require("../controller/user.controller");
+const {
+  getAllDoctorsHandler,
+  getAllUsersHandler,
+} = require("../controller/user.controller");
 //auth routes
 router.get("/", protect, isUserLoggedIn);
 router.post("/signup-login", signupLoginHandler);
