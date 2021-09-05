@@ -64,7 +64,11 @@ exports.loginConfirmHandler = catchAsync(async (req, res, next) => {
     });
   }
   const token = signToken(phone);
-  res.cookie("jwt", token, {domain:"vetnow.ir",path:"/", secure:true });
+  if (process.env.NODE_ENV === "development") {
+    res.cookie("jwt", token, { httpOnly: true });
+  } else {
+    res.cookie("jwt", token, { domain: "vetnow.ir", path: "/", secure: true });
+  }
 
   res.status(200).json({
     status: "success",

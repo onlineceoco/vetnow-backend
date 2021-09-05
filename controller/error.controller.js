@@ -1,12 +1,12 @@
 const AppError = require("../utils/appError");
 
-const handleCastErrorDB = (err) => {
+const handleCastErrorDB = err => {
   console.log(err);
   const message = `Invalid Request`;
   return new AppError(message, 400);
 };
 
-const handleDuplicateFieldsDB = (err) => {
+const handleDuplicateFieldsDB = err => {
   const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
 
   console.log(value);
@@ -14,8 +14,8 @@ const handleDuplicateFieldsDB = (err) => {
   return new AppError(message, 400);
 };
 
-const handleValidationErrorDB = (err) => {
-  const errors = Object.values(err.errors).map((el) => el.message);
+const handleValidationErrorDB = err => {
+  const errors = Object.values(err.errors).map(el => el.message);
   console.log(errors, "error");
   const message = `${errors.join(".\n ")}`;
   return new AppError(message, 400);

@@ -18,3 +18,15 @@ exports.getAllDoctorsHandler = catchAsync(async (req, res) => {
 });
 
 exports.getAllUsersHandler = factory.getAll(User);
+
+exports.addUserInfoHandler = catchAsync(async (req, res) => {
+  const update = await User.findOneAndUpdate({ _id: req.user._id }, req.body, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  });
+  res.status(200).json({
+    result: "success",
+    data: update,   
+  });
+});
