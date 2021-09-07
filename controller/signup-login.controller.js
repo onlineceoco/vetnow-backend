@@ -65,7 +65,10 @@ exports.loginConfirmHandler = catchAsync(async (req, res, next) => {
   }
   const token = signToken(phone);
   if (process.env.NODE_ENV === "development") {
-    res.cookie("jwt", token, { httpOnly: true });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      path: "/",
+    });
   } else {
     res.cookie("jwt", token, { domain: "vetnow.ir", path: "/", secure: true });
   }
@@ -85,3 +88,13 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+exports.logoutHandler = catchAsync(async (req, res) => {
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    path: "/",
+  });
+  res
+    .status(200)
+    .json({ status: "success", message: "Cookie has been removed" });
+});

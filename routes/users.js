@@ -5,6 +5,7 @@ const {
   signupLoginHandler,
   loginConfirmHandler,
   isUserLoggedIn,
+  logoutHandler,
 } = require("../controller/signup-login.controller");
 const {
   getAllDoctorsHandler,
@@ -15,6 +16,7 @@ const {
 router.get("/", protect, isUserLoggedIn);
 router.post("/signup-login", signupLoginHandler);
 router.post("/login-confirm/:phone", loginConfirmHandler);
+router.get("/logout", protect, logoutHandler);
 // getting users route
 router.get("/doctors", protect, getAllDoctorsHandler);
 router.get("/get-users", protect, getAllUsersHandler);

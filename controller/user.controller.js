@@ -27,6 +27,6 @@ exports.addUserInfoHandler = catchAsync(async (req, res) => {
   });
   res.status(200).json({
     result: "success",
-    data: update,   
+    data: update,
   });
 });
