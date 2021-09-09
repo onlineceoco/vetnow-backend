@@ -74,7 +74,7 @@ io.on("connection", socket => {
           text: message,
           user: socket.user._id,
         },
-        name: socket.user.phone,
+        name: socket.user.name ? socket.user.name : socket.user.phone,
       });
     }
     callback();
