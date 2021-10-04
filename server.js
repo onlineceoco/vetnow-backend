@@ -41,7 +41,7 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://www.vetnow.ir",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -104,123 +104,123 @@ io.on("connection", socket => {
 
 //support chat
 
-const supportNameSpace = io.of("/support");
-supportNameSpace.use(async (socket, next) => {
-  if (socket.handshake.auth && socket.handshake.auth.token) {
-    const token = socket.handshake.auth.token;
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    // 3) Check if user still exists
-    const currentUser = await User.findOne({ phone: decoded.id });
-    if (!currentUser) {
-      return next(
-        new AppError(
-          "The user belonging to this token does no longer exist.",
-          401,
-        ),
-      );
-    }
-    socket.user = currentUser;
-    next();
-  } else {
-    next();
-  }
-});
-io.of("/support").on("connection", async socket => {
-  //file upload
-  const uploader = new SocketIOFileUpload();
-  uploader.dir = "./public/support";
-  uploader.listen(socket);
+// const supportNameSpace = io.of("/support");
+// supportNameSpace.use(async (socket, next) => {
+//   if (socket.handshake.auth && socket.handshake.auth.token) {
+//     const token = socket.handshake.auth.token;
+//     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+//     // 3) Check if user still exists
+//     const currentUser = await User.findOne({ phone: decoded.id });
+//     if (!currentUser) {
+//       return next(
+//         new AppError(
+//           "The user belonging to this token does no longer exist.",
+//           401,
+//         ),
+//       );
+//     }
+//     socket.user = currentUser;
+//     next();
+//   } else {
+//     next();
+//   }
+// });
+// io.of("/support").on("connection", async socket => {
+//   //file upload
+//   const uploader = new SocketIOFileUpload();
+//   uploader.dir = "./public/support";
+//   uploader.listen(socket);
 
-  //support room
-  if (socket.user && socket.user.role === "oprator") {
-    //support chat
-    socket.join("supportRoom");
-    //finding supports that Connected
-    const sockets = await supportNameSpace.in("supportRoom").fetchSockets();
-    let connectedSupports = [];
-    for (const socket of sockets) {
-      connectedSupports.push(socket.user);
-    }
-    supportNameSpace.emit("current_supports", connectedSupports);
+//   //support room
+//   if (socket.user && socket.user.role === "oprator") {
+//     //support chat
+//     socket.join("supportRoom");
+//     //finding supports that Connected
+//     const sockets = await supportNameSpace.in("supportRoom").fetchSockets();
+//     let connectedSupports = [];
+//     for (const socket of sockets) {
+//       connectedSupports.push(socket.user);
+//     }
+//     supportNameSpace.emit("current_supports", connectedSupports);
 
-    socket.on("support_msg", (msg, room, callback) => {
-      // new client message notif to supports
-      supportNameSpace.to(room).emit("new_msg", { msg, room });
-      callback();
-    });
-    //get client first msg
-    socket.on("loaded", room => {
-      // socket.join(room);
-      const stringRoom = JSON.stringify(room);
+//     socket.on("support_msg", (msg, room, callback) => {
+//       // new client message notif to supports
+//       supportNameSpace.to(room).emit("new_msg", { msg, room });
+//       callback();
+//     });
+//     //get client first msg
+//     socket.on("loaded", room => {
+//       // socket.join(room);
+//       const stringRoom = JSON.stringify(room);
 
-      RedisClient.hgetall(stringRoom, function (err, value) {
-        if (value && value.msg)
-          supportNameSpace.to(room).emit("client_first_msg_server", value.msg);
-      });
-    });
+//       RedisClient.hgetall(stringRoom, function (err, value) {
+//         if (value && value.msg)
+//           supportNameSpace.to(room).emit("client_first_msg_server", value.msg);
+//       });
+//     });
 
-    //on disconnect
-    socket.on("disconnect", () => {
-      const index = connectedSupports.findIndex(
-        support => support._id === socket.user._id,
-      );
-      const remianSupports = connectedSupports.splice(0, index);
-      supportNameSpace
-        .to("supportRoom")
-        .emit("support_disconnect", remianSupports);
-    });
-  }
+//     //on disconnect
+//     socket.on("disconnect", () => {
+//       const index = connectedSupports.findIndex(
+//         support => support._id === socket.user._id,
+//       );
+//       const remianSupports = connectedSupports.splice(0, index);
+//       supportNameSpace
+//         .to("supportRoom")
+//         .emit("support_disconnect", remianSupports);
+//     });
+//   }
 
-  //client room
-  socket.on("client_join", room => {
-    console.log("client joined");
-    //client chat
-    socket.join(room);
+//   //client room
+//   socket.on("client_join", room => {
+//     console.log("client joined");
+//     //client chat
+//     socket.join(room);
 
-    // RedisClient.hgetall(JSON.stringify(room), function (err, value) {
-    //   if (value && value.msg) {
-    //     socket.emit("send_saved_messages", value.messages, room);
-    //   }
-    // });
+//     // RedisClient.hgetall(JSON.stringify(room), function (err, value) {
+//     //   if (value && value.msg) {
+//     //     socket.emit("send_saved_messages", value.messages, room);
+//     //   }
+//     // });
 
-    socket.on("clinet_msg", (msg, room, callback) => {
-      // new client message notif to supports
-      supportNameSpace
-        .to("supportRoom")
-        .emit("new_msg_notif", { sent: true, room });
-      supportNameSpace.to(room).emit("new_msg", { msg, room });
-      callback();
-    });
+//     socket.on("clinet_msg", (msg, room, callback) => {
+//       // new client message notif to supports
+//       supportNameSpace
+//         .to("supportRoom")
+//         .emit("new_msg_notif", { sent: true, room });
+//       supportNameSpace.to(room).emit("new_msg", { msg, room });
+//       callback();
+//     });
 
-    socket.on("client_first_msg", (msg, room) => {
-      const stringRoom = JSON.stringify(room);
-      RedisClient.hset(stringRoom, "msg", JSON.stringify(msg));
-    });
+//     socket.on("client_first_msg", (msg, room) => {
+//       const stringRoom = JSON.stringify(room);
+//       RedisClient.hset(stringRoom, "msg", JSON.stringify(msg));
+//     });
 
-    //   let messages = [];
-    //   socket.on("client_support_saved_messages", msg => {
-    //     messages.push(msg);
-    //     const stringMessages = JSON.stringify(messages);
-    //     RedisClient.hset(JSON.stringify(room), "messages", stringMessages);
-    //   });
-  });
+//     //   let messages = [];
+//     //   socket.on("client_support_saved_messages", msg => {
+//     //     messages.push(msg);
+//     //     const stringMessages = JSON.stringify(messages);
+//     //     RedisClient.hset(JSON.stringify(room), "messages", stringMessages);
+//     //   });
+//   });
 
-  uploader.on("saved", function (event) {
-    // socket.on("file_co")
-    const room = event.file.meta.roomId;
-    supportNameSpace.to(room).emit("file_complete", {
-      message: "",
-      from: "client",
-      file: event.file.name,
-    });
-  });
+//   uploader.on("saved", function (event) {
+//     // socket.on("file_co")
+//     const room = event.file.meta.roomId;
+//     supportNameSpace.to(room).emit("file_complete", {
+//       message: "",
+//       from: "client",
+//       file: event.file.name,
+//     });
+//   });
 
-  socket.on("leave_room", room => {
-    socket.leave(room);
-  });
+//   socket.on("leave_room", room => {
+//     socket.leave(room);
+//   });
 
-  socket.on("disconnect", () => {});
-});
+//   socket.on("disconnect", () => {});
+// });
 
 process.on("unhandledRejection", err => {
   console.log("UNHANDLED REJECTION! 💥 Shutting down...");
