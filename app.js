@@ -7,9 +7,11 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 // const hpp = require("hpp");
+const SocketIOFileUpload = require("socketio-file-upload");
 
 const app = express();
 app.use(cors({ credentials: true, origin: true }));
+app.use(SocketIOFileUpload.router);
 app.use(express.static("public"));
 
 const limiter = rateLimit({

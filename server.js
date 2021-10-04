@@ -6,6 +6,7 @@ const User = require("./db/models/User.js");
 const Message = require("./db/models/message");
 const redis = require("redis");
 const RedisClient = redis.createClient();
+const SocketIOFileUpload = require("socketio-file-upload");
 
 process.on("uncaughtException", err => {
   console.log("UNCAUGHT EXCEPTION! 💥 Shutting down...");
@@ -70,19 +71,21 @@ io.use(async (socket, next) => {
 //doctors Chat
 
 io.on("connection", socket => {
+  console.log("joiend");
   socket.on("joinroom", roomId => {
     socket.join(roomId);
   });
   socket.on("chatroomMessage", async ({ message, roomId }, callback) => {
-    if (message.trim().length > 0) {
-      await Message.create({
-        chatroom: roomId,
-        user: socket.user._id,
-        message,
-      });
+    console.log(message);
+    if (message) {
+      // await Message.create({
+      //   chatroom: roomId,
+      //   user: socket.user._id,
+      //   message,
+      // });
       io.to(roomId).emit("newMessage", {
         message: {
-          text: message,
+          text: message.message,
           user: socket.user._id,
         },
         name: socket.user.name ? socket.user.name : socket.user.phone,
@@ -123,6 +126,11 @@ supportNameSpace.use(async (socket, next) => {
   }
 });
 io.of("/support").on("connection", async socket => {
+  //file upload
+  const uploader = new SocketIOFileUpload();
+  uploader.dir = "./public/support";
+  uploader.listen(socket);
+
   //support room
   if (socket.user && socket.user.role === "oprator") {
     //support chat
@@ -140,20 +148,17 @@ io.of("/support").on("connection", async socket => {
       supportNameSpace.to(room).emit("new_msg", { msg, room });
       callback();
     });
+    //get client first msg
     socket.on("loaded", room => {
-      console.log("loaded");
       // socket.join(room);
       const stringRoom = JSON.stringify(room);
 
       RedisClient.hgetall(stringRoom, function (err, value) {
-        console.log(value.msg);
-        if (value.msg)
+        if (value && value.msg)
           supportNameSpace.to(room).emit("client_first_msg_server", value.msg);
       });
     });
 
-    //get client first msg
-    // socket.emit("blad");
     //on disconnect
     socket.on("disconnect", () => {
       const index = connectedSupports.findIndex(
@@ -168,8 +173,16 @@ io.of("/support").on("connection", async socket => {
 
   //client room
   socket.on("client_join", room => {
+    console.log("client joined");
     //client chat
     socket.join(room);
+
+    // RedisClient.hgetall(JSON.stringify(room), function (err, value) {
+    //   if (value && value.msg) {
+    //     socket.emit("send_saved_messages", value.messages, room);
+    //   }
+    // });
+
     socket.on("clinet_msg", (msg, room, callback) => {
       // new client message notif to supports
       supportNameSpace
@@ -178,12 +191,32 @@ io.of("/support").on("connection", async socket => {
       supportNameSpace.to(room).emit("new_msg", { msg, room });
       callback();
     });
-    JSON.stringify;
 
     socket.on("client_first_msg", (msg, room) => {
       const stringRoom = JSON.stringify(room);
       RedisClient.hset(stringRoom, "msg", JSON.stringify(msg));
     });
+
+    //   let messages = [];
+    //   socket.on("client_support_saved_messages", msg => {
+    //     messages.push(msg);
+    //     const stringMessages = JSON.stringify(messages);
+    //     RedisClient.hset(JSON.stringify(room), "messages", stringMessages);
+    //   });
+  });
+
+  uploader.on("saved", function (event) {
+    // socket.on("file_co")
+    const room = event.file.meta.roomId;
+    supportNameSpace.to(room).emit("file_complete", {
+      message: "",
+      from: "client",
+      file: event.file.name,
+    });
+  });
+
+  socket.on("leave_room", room => {
+    socket.leave(room);
   });
 
   socket.on("disconnect", () => {});
