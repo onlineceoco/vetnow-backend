@@ -14,12 +14,12 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(SocketIOFileUpload.router);
 app.use(express.static("public"));
 
-const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: "Too Many Request,Try again in an hour!",
-});
-app.use("/api", limiter);
+// const limiter = rateLimit({
+//   max: 100,
+//   windowMs: 60 * 60 * 1000,
+//   message: "Too Many Request,Try again in an hour!",
+// });
+// app.use("/api", limiter);
 app.use(helmet());
 
 app.use(express.json({ limit: "10kb" }));

@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const User = require("./db/models/User.js");
 const Message = require("./db/models/message");
 const redis = require("redis");
-const RedisClient = redis.createClient();
+// const RedisClient = redis.createClient();
 const SocketIOFileUpload = require("socketio-file-upload");
 
 process.on("uncaughtException", err => {
