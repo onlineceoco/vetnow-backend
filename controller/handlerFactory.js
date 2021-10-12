@@ -28,9 +28,7 @@ exports.updateOne = Model =>
     if (req.body.images && req.body.images.length === 0) {
       delete req.body.images;
     }
-    // if (Model === Product) {
-    //   await deleteImagesAfterError(Model, req.params.id);
-    // }
+
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,

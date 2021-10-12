@@ -2,6 +2,10 @@ const User = require("../db/models/User");
 const catchAsync = require("../utils/catchAsync");
 const factory = require("./handlerFactory");
 
+exports.getSingleDoctorHandler = factory.getOne(User);
+
+exports.updateSingleDoctorHandler = factory.updateOne(User);
+
 exports.getAllDoctorsHandler = catchAsync(async (req, res) => {
   const doctors = await User.find({}).where("role").equals("doctor");
   if (!doctors) {

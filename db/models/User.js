@@ -68,6 +68,30 @@ const userSchema = mongoose.Schema(
     job: {
       type: String,
     },
+    graduate: {
+      type: String,
+      defalut: undefined,
+      required: [true, "سال فارغ التحصیلی را وارد نمایید"],
+      trim: true,
+    },
+    experience: {
+      type: String,
+      defalut: undefined,
+      required: [true, " میزان تجربه  را وارد نمایید"],
+      trim: true,
+    },
+    doctorDescreption: {
+      type: String,
+      defalut: undefined,
+      required: [true, "توضیحات دریاره دکتر را وارد نمایید"],
+      trim: true,
+    },
+    doctorId: {
+      type: String,
+      defalut: undefined,
+      required: [true, "شماره نظام پزشکی دکتر را وارد نمایید"],
+      trim: true,
+    },
   },
   { timestamps: true },
 );

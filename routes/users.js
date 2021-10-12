@@ -11,6 +11,8 @@ const {
   getAllDoctorsHandler,
   getAllUsersHandler,
   addUserInfoHandler,
+  getSingleDoctorHandler,
+  updateSingleDoctorHandler,
 } = require("../controller/user.controller");
 //auth routes
 router.get("/", protect, isUserLoggedIn);
@@ -19,6 +21,8 @@ router.post("/login-confirm/:phone", loginConfirmHandler);
 router.get("/logout", protect, logoutHandler);
 // getting users route
 router.get("/doctors", protect, getAllDoctorsHandler);
+router.get("/doctor/:id", protect, getSingleDoctorHandler);
+router.patch("/doctor/:id", protect, updateSingleDoctorHandler);
 router.get("/get-users", protect, getAllUsersHandler);
 
 //add user info
