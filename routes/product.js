@@ -1,9 +1,9 @@
 const express = require("express");
 
 const {
-  resizeTourImages,
+  resizeProductImages,
   createProductHandler,
-  uploadTourImages,
+  uploadProdcutImages,
   updateProductHandler,
   deleteProductHandler,
   getAllProducts,
@@ -15,12 +15,22 @@ const router = express.Router();
 router
   .route("/")
   .get(getAllProducts)
-  .post(protect, uploadTourImages, resizeTourImages, createProductHandler);
+  .post(
+    protect,
+    uploadProdcutImages,
+    resizeProductImages,
+    createProductHandler,
+  );
 
 router
   .route("/:id")
   .get(getSingleProduct)
-  .patch(protect, uploadTourImages, resizeTourImages, updateProductHandler)
+  .patch(
+    protect,
+    uploadProdcutImages,
+    resizeProductImages,
+    updateProductHandler,
+  )
   .delete(protect, deleteProductHandler);
 
 module.exports = router;

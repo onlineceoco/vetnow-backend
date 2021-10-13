@@ -14,6 +14,7 @@ const {
   getSingleDoctorHandler,
   updateSingleDoctorHandler,
 } = require("../controller/user.controller");
+const upload = require("../utils/multer.config");
 //auth routes
 router.get("/", protect, isUserLoggedIn);
 router.post("/signup-login", signupLoginHandler);
@@ -22,7 +23,12 @@ router.get("/logout", protect, logoutHandler);
 // getting users route
 router.get("/doctors", protect, getAllDoctorsHandler);
 router.get("/doctor/:id", protect, getSingleDoctorHandler);
-router.patch("/doctor/:id", protect, updateSingleDoctorHandler);
+router.patch(
+  "/doctor/:id",
+  protect,
+  upload.single("avatar"),
+  updateSingleDoctorHandler,
+);
 router.get("/get-users", protect, getAllUsersHandler);
 
 //add user info

@@ -19,9 +19,9 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-exports.uploadTourImages = upload.array("images");
+exports.uploadProdcutImages = upload.array("images");
 
-exports.resizeTourImages = catchAsync(async (req, res, next) => {
+exports.resizeProductImages = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
   // 2) Images

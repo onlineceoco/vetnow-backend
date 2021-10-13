@@ -33,6 +33,11 @@ const userSchema = mongoose.Schema(
     lastName: {
       type: String,
     },
+    avatar: {
+      type: String,
+      required: "true",
+      default: undefined,
+    },
     codeMelli: {
       type: String,
       validate: {
@@ -70,25 +75,25 @@ const userSchema = mongoose.Schema(
     },
     graduate: {
       type: String,
-      defalut: undefined,
+      default: undefined,
       required: [true, "سال فارغ التحصیلی را وارد نمایید"],
       trim: true,
     },
     experience: {
       type: String,
-      defalut: undefined,
+      default: undefined,
       required: [true, " میزان تجربه  را وارد نمایید"],
       trim: true,
     },
     doctorDescreption: {
       type: String,
-      defalut: undefined,
+      default: undefined,
       required: [true, "توضیحات دریاره دکتر را وارد نمایید"],
       trim: true,
     },
     doctorId: {
       type: String,
-      defalut: undefined,
+      default: undefined,
       required: [true, "شماره نظام پزشکی دکتر را وارد نمایید"],
       trim: true,
     },
