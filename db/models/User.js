@@ -35,7 +35,6 @@ const userSchema = mongoose.Schema(
     },
     avatar: {
       type: String,
-      required: "true",
       default: undefined,
     },
     codeMelli: {
@@ -76,25 +75,21 @@ const userSchema = mongoose.Schema(
     graduate: {
       type: String,
       default: undefined,
-      required: [true, "سال فارغ التحصیلی را وارد نمایید"],
       trim: true,
     },
     experience: {
       type: String,
       default: undefined,
-      required: [true, " میزان تجربه  را وارد نمایید"],
       trim: true,
     },
     doctorDescreption: {
       type: String,
       default: undefined,
-      required: [true, "توضیحات دریاره دکتر را وارد نمایید"],
       trim: true,
     },
     doctorId: {
       type: String,
       default: undefined,
-      required: [true, "شماره نظام پزشکی دکتر را وارد نمایید"],
       trim: true,
     },
   },
