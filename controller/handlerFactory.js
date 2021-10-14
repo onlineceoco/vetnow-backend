@@ -31,7 +31,6 @@ exports.updateOne = Model =>
     if (req.file) {
       req.body.avatar = req.file.filename;
     }
-    console.log(req.body);
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
