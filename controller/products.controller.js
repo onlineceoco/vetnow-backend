@@ -31,7 +31,7 @@ exports.resizeProductImages = catchAsync(async (req, res, next) => {
     req.files.map(async (file, i) => {
       const filename = `product-${Date.now()}-${i + 1}.jpeg`;
       await sharp(file.buffer)
-        .resize(2000, 1333)
+        .resize(400, 400)
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(`public/img/products/${filename}`);
@@ -43,7 +43,6 @@ exports.resizeProductImages = catchAsync(async (req, res, next) => {
   next();
 });
 
-
 exports.createProductHandler = factory.createOne(Product);
 
 exports.updateProductHandler = factory.updateOne(Product);
@@ -53,5 +52,3 @@ exports.deleteProductHandler = factory.deleteOne(Product);
 exports.getAllProducts = factory.getAll(Product);
 
 exports.getSingleProduct = factory.getOne(Product, { path: "comment" });
-
-
