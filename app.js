@@ -22,7 +22,7 @@ app.use(express.static("public"));
 // app.use("/api", limiter);
 app.use(helmet());
 
-app.use(express.json({ limit: "10kb" }));
+app.use(express.json());
 
 //no-sql injection after body parser
 app.use(mongoSanitize());
