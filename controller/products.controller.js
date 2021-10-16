@@ -18,6 +18,9 @@ const multerFilter = (req, file, cb) => {
 const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
+  limits: {
+    fieldSize: "Infinity",
+  },
 });
 
 exports.uploadProdcutImages = upload.array("images");
