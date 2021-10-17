@@ -18,9 +18,6 @@ const multerFilter = (req, file, cb) => {
 const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
-  limits: {
-    fieldSize: "Infinity",
-  },
 });
 
 exports.uploadProdcutImages = upload.array("images");
@@ -34,6 +31,7 @@ exports.resizeProductImages = catchAsync(async (req, res, next) => {
   await Promise.all(
     req.files.map(async (file, i) => {
       const filename = `product-${Date.now()}-${i + 1}.jpeg`;
+
       await sharp(file.buffer)
         .resize(400, 400)
         .toFormat("jpeg")
