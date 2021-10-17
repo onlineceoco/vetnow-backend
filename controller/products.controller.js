@@ -24,9 +24,8 @@ exports.uploadProdcutImages = upload.array("images");
 
 exports.resizeProductImages = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
-
   // 2) Images
-  req.body.images = [];
+  req.body.images = req.body.images ? [...req.body.images] : [];
 
   await Promise.all(
     req.files.map(async (file, i) => {
