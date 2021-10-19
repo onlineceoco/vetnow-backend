@@ -32,7 +32,7 @@ exports.resizeProductImages = catchAsync(async (req, res, next) => {
       const filename = `product-${Date.now()}-${i + 1}.jpeg`;
 
       await sharp(file.buffer)
-        .resize(400, 400)
+        // .resize(400, 400)
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(`public/img/products/${filename}`);
