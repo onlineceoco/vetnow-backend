@@ -8,8 +8,6 @@ const handleCastErrorDB = err => {
 
 const handleDuplicateFieldsDB = err => {
   const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
-
-  console.log(value);
   const message = `مقدار ${value} تکراری میباشد . لطفا مقدار غیر تکراری جایگزین کنید.`;
   return new AppError(message, 400);
 };
