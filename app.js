@@ -14,12 +14,12 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(SocketIOFileUpload.router);
 app.use(express.static("public"));
 
-// const limiter = rateLimit({
-//   max: 100,
-//   windowMs: 60 * 60 * 1000,
-//   message: "Too Many Request,Try again in an hour!",
-// });
-// app.use("/api", limiter);
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "Too Many Request,Try again in an hour!",
+});
+app.use("/api", limiter);
 app.use(helmet());
 
 app.use(express.json());
@@ -28,8 +28,7 @@ app.use(express.json());
 app.use(mongoSanitize());
 //prevent xss attack after body parser
 app.use(xss());
-//prevent parameter pollution
-// app.use(hpp({ whitelist: ["category"] }));
+// app.use(hpp({ whitelist: ["c ategory"] }));
 
 app.use("/api/v1/users", require("./routes/users"));
 app.use("/api/v1/products", require("./routes/product"));

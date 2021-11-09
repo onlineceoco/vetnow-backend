@@ -12,7 +12,7 @@ const productSchema = mongoose.Schema(
       type: String,
       required: [true, "توضیحات محصول نمیتواند خالی بماند"],
       trim: true,
-    },
+    },  
     category: {
       type: String,
       required: [true, "دسته بندی محصول نمیتواند خالی بماند"],
